@@ -1,10 +1,10 @@
-充電線 1000 Yes
-耳機 3000 Yes
-電視 20000 No
-電腦 30000 Yes
-筆記型電腦 25000 Yes
+Cable 1000 Yes
+Earphone 3000 Yes
+Televistion 20000 No
+Computer 30000 Yes
+Notebook 25000 Yes
 Switch 12000 Yes
 PS5 20000 No
 Xbox 20000 Yes
-路由器 2000 Yes
-電冰箱 30000 No
+Router 2000 Yes
+Freezer 30000 No

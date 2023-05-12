@@ -17,7 +17,7 @@
             </div>
         </div>
         <div style="position: relative;width:100%;top:24%;height:5%">
-            <input class="search-input" style="position: relative;left:45%;height:100%" type="text" placeholder="" v-model="search" />
+            <input id="goodName-search" class="search-input" style="position: relative;left:49%;height:100%" type="text" placeholder="" v-model="search" />
         </div>
         <div id ="section-container" class="text-left" style="position: relative; width:100% ;top:25%">
             <!--
@@ -102,6 +102,21 @@
           buildTabSection(tabcount);
           dataInsert(lines);
           console.log(lines);
+          //console.log(lines);
+          document.getElementById('goodName-search').addEventListener('input', function(event) {
+            var input = event.target;
+            var filter = input.value.trim().toUpperCase();
+            if (filter === '') {
+                // 輸入為空，重新建立原始表格
+                buildTabSection(tabcount);
+                dataInsert(lines);
+            } else {
+                // 執行搜尋
+                buildTabSection(tabcount);
+                dataInsert(lines);
+                searchTable(filter);
+            }
+         });
         }
       };
       xhr.send();
@@ -138,6 +153,9 @@ function buildTabSection(tabcount){
     label.className = 'tab';
     label.setAttribute('for', 'tab' + i);
     label.textContent = i;
+
+    label.style.position = 'relative';
+    label.style.left = '10%';
 
 
     var divider = document.createElement('div');
@@ -192,14 +210,14 @@ function dataInsert(tabs){
         var content = 'content'+ (i+1);
         var section = document.getElementById(content);
         var tableRows = section.getElementsByTagName('tr');
-        console.log(tableRows);
+        //console.log(tableRows);
 
         var rowValues = tabs[i];
 
 
         for (var j = 0; j < rowValues.length; j++) {
             var tableCells = tableRows[j + 1].getElementsByTagName('td');
-            console.log(tableCells);
+            //console.log(tableCells);
             var cellValue = rowValues[j];
             var cellData = cellValue.split(' ');
             //console.log(cellData);
@@ -210,6 +228,68 @@ function dataInsert(tabs){
         }
     }
 }
+
+function searchTable(filter) {
+    console.log(filter);
+    var sectionContainer = document.getElementById('section-container');
+
+    // 创建新的表格
+    var newTable = document.createElement('table');
+    newTable.classList.add('search-results-table');
+
+    //建立標題行
+    var headerRow = document.createElement('tr');
+    var headerCell1 = document.createElement('th');
+    var headerCell2 = document.createElement('th');
+    var headerCell3 = document.createElement('th');
+    headerCell1.textContent = '商品名稱';
+    headerCell2.textContent = '價格';
+    headerCell3.textContent = '是否有庫存';
+    headerRow.appendChild(headerCell1);
+    headerRow.appendChild(headerCell2);
+    headerRow.appendChild(headerCell3);
+
+    // 加到新表格中
+    newTable.appendChild(headerRow);
+
+
+    var rowsToDisplay = [];
+
+    var sections = sectionContainer.querySelectorAll('section');
+    sections.forEach(function (section) {
+        var table = section.querySelector('table');
+        var rows = table.getElementsByTagName('tr');
+
+        for (var i = 1; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td');
+            var nameCell = cells[0];
+            //console.log(cells);
+            //console.log(nameCell);
+            if (nameCell) {
+                var value = nameCell.textContent || nameCell.innerText;
+                console.log(value);
+                var productName = value.toUpperCase();
+
+                // 判断是否匹配搜索条件
+                //console.log(filter);
+                if (productName.startsWith(filter)) {
+                    rowsToDisplay.push(rows[i].cloneNode(true));
+                }
+            }
+        }
+    });
+
+    // 清空搜索结果容器
+    sectionContainer.innerHTML = '';
+
+    // 将匹配的資料添加到新的表格中
+    rowsToDisplay.forEach(function (row) {
+        newTable.appendChild(row);
+    });
+    sectionContainer.appendChild(newTable);
+}
+
+
 
 
 
